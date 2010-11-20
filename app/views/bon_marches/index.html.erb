@@ -1,0 +1,43 @@
+<h1>Shopzilla Search Start Page</h1>
+
+<hr/>
+
+<% form_tag(search_bon_marches_path, :method => "post") do %>
+  <%= label_tag(:brands, "Brands:") %>
+  <select name="brands" id="brands">
+    <%
+      brand_select = Hash.new
+      @top20brands.each do |item|
+          brand_select.store(item.Brand__c, item.Brand__c)
+      end
+    %>
+    <%= options_for_select(brand_select) %>
+  </select>
+
+<hr></hr>
+  <%= label_tag(:favorites, "Favorites:") %>
+  <select name="favorites" id="favorites">
+    <%
+      favorites_select = Hash.new
+      @top20favorites.each do |item|
+          favorites_select.store(item.Store_Name__c, item.Store_Name__c)
+      end
+    %>
+    <%= options_for_select(favorites_select) %>
+  </select>
+
+<hr></hr>
+  <%= label_tag(:interests, "Interests:") %>
+  <select name="interests" id="interests">
+    <%
+      interest_select = Hash.new
+      @top20interests.each do |item|
+          interest_select.store(item.Category_Label__c, item.Category_Label__c)
+      end
+    %>
+    <%= options_for_select(interest_select) %>
+  </select>
+  <br/>
+  <%= submit_tag("Search") %>
+<% end %>
+

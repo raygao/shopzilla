@@ -1,0 +1,75 @@
+<h1>Shopzilla Search Results</h1>
+
+<%= link_to 'Back', bon_marches_path %>
+
+<% unless @search_results.empty? %>
+  <table>
+    <tr>
+      <th>Id</th>
+      <th>Type</th>
+      <th>Personal Mailing State</th>
+      <th>Last Name</th>
+      <th>Gender</th>
+      <th>First Name</th>
+      <th>Favorite Stores</th>
+      <th>Favorite Brands</th>
+      <th>Category Interests</th>
+    </tr>
+
+    <% @search_results.each do |single_result| %>
+
+      <tr>
+        <td><%= single_result.Id.to_s %></td>
+        <td><%= single_result.Type.to_s %></td>
+        <td><%= single_result.PersonalMailingState.to_s %></td>
+        <td><%= single_result.LastName.to_s %></td>
+        <td><%= single_result.Gender__c.to_s %></td>
+        <td><%= single_result.FirstName.to_s %></td>
+        <td>
+          <% unless single_result.Favorite_Stores__r.nil?%>
+            <% if single_result.Favorite_Stores__r[:size].to_i > 1 %>
+
+                <% single_result.Favorite_Stores__r.records.each do |store| %>
+                  <%= store.Store_Name__c %>, &nbsp;
+                <%end%>
+
+            <% else %>
+              <%= single_result.Favorite_Stores__r.records.Store_Name__c %>
+            <%end%>
+          <%end%>
+        </td>
+        <td>
+          <% unless single_result.Favorite_Brands__r.nil?%>
+            <% if single_result.Favorite_Brands__r[:size].to_i > 1 %>
+
+                <% single_result.Favorite_Brands__r.records.each do |brand| %>
+                  <%= brand.Brand__c %>, &nbsp;
+                <%end%>
+              
+            <% else %>
+              <%= single_result.Favorite_Brands__r.records.Brand__c %>
+            <%end%>
+          <%end%>
+        </td>
+        <td>
+          <% unless single_result.Category_Interests__r.nil?%>
+            <% if single_result.Category_Interests__r[:size].to_i > 1 %>
+
+                <% single_result.Category_Interests__r.records.each do |interest| %>
+                  + <%= interest.Brand__c %>, &nbsp;
+                <%end%>
+
+            <% else %>
+              <%= single_result.Category_Interests__r.Brand__c %>
+            <%end%>
+          <%end%>          
+        </td>
+      </tr>
+    <%end%>
+
+  </table>
+<%else%>
+  nothing found
+<%end%>
+<br></br>
+<%= link_to 'Back', bon_marches_path %>

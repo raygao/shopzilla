@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  brand: MyText
+  category: MyText
+  interest: MyText
+  store: MyText
+  description: MyText
+
+two:
+  brand: MyText
+  category: MyText
+  interest: MyText
+  store: MyText
+  description: MyText
