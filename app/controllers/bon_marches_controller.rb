@@ -23,6 +23,11 @@ class BonMarchesController < ApplicationController
     @favorites = params[:favorites]
     @interests = params[:interests]
 
+    #Escapinng  '\' character which is a separator used by SOQL
+    @brands.sub!("'","\\\\'")
+    @favorites.sub!("'","\\\\'")
+    @interests.sub!("'","\\\\'")
+
     query_tool = QueryShopzilla.new
     #@search_results = query_tool.query_strings(@brands, @favorites, @interests)
     @search_results = query_tool.query_arrays(@brands, @favorites, @interests)
