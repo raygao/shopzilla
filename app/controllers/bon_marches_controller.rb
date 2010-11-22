@@ -16,17 +16,25 @@ class BonMarchesController < ApplicationController
 
   def search
     # Read my utility library for details, it takes both parameters as
-    #  1. string
-    #  2. Array
+    #  1. string -->  query_tool.query_strings(@brands, @favorites, @interests)
+    #  2. Array --> query_tool.query_arrays(@brands, @favorites, @interests)
+
     @brands = params[:brands]
-    #@brands = ["Nike", "Reebok"]
     @favorites = params[:favorites]
     @interests = params[:interests]
 
-    #Escapinng  '\' character which is a separator used by SOQL
-    @brands.sub!("'","\\\\'")
-    @favorites.sub!("'","\\\\'")
-    @interests.sub!("'","\\\\'")
+    # Escaping  '\' character which is a separator used by SOQL
+    @brands.each do |brand|
+      brand.sub!("'","\\\\'")
+    end
+
+    @favorites.each do |favorite|
+      favorite.sub!("'","\\\\'")
+    end
+
+    @interests.each do |interest|
+      interest.sub!("'","\\\\'")
+    end
 
     query_tool = QueryShopzilla.new
     #@search_results = query_tool.query_strings(@brands, @favorites, @interests)
