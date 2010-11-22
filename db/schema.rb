@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101120184659) do
+ActiveRecord::Schema.define(:version => 20101119232230) do
 
   create_table "bon_marches", :force => true do |t|
     t.text     "brand"
@@ -29,11 +29,6 @@ ActiveRecord::Schema.define(:version => 20101120184659) do
   create_table "salesforce_category_interests", :force => true do |t|
     t.text     "Name"
     t.text     "Account__c"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "shopzilla_top_tools", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
