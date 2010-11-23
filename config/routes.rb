@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :bon_marches, :collection => { :search => :post }
+  map.resources :bon_marches, :collection => { :search => :post, :error =>[:post, :get] }
   map.root :controller => "bon_marches"
 
   # The priority is based upon order of creation: first created -> highest priority.
