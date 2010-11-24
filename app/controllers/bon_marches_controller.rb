@@ -3,10 +3,28 @@ require RAILS_ROOT + '/lib/shopzilla/query_shopzilla'
 
 class BonMarchesController < ApplicationController
   def index
+    # use memcache
     top_tool = TopTool.new
-    @top20brands = top_tool.top20brands()
-    @top20favorites = top_tool.top20favorites()
-    @top20interests = top_tool.top20interests()
+    if Rails.cache.exist? 'top20brands'
+      @top20brands = Rails.cache.fetch('top20brands')
+    else
+      @top20brands = top_tool.top20brands()
+      Rails.cache.write('top20brands', @top20brands)
+    end
+
+    if Rails.cache.exist? 'top20favorites'
+      @top20favorites = Rails.cache.fetch('top20favorites')
+    else
+      @top20favorites = top_tool.top20favorites()
+      Rails.cache.write('top20favorites', @top20favorites)
+    end
+
+    if Rails.cache.exist? 'top20interests'
+      @top20interests = Rails.cache.fetch('top20interests')
+    else
+      @top20interests = top_tool.top20interests()
+      Rails.cache.write('top20interests', @top20interests)
+    end  
 
     respond_to do |format|
       format.html # index.html.erb
