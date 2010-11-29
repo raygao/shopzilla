@@ -1,6 +1,96 @@
-<%#
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-%>
-
 <%= "show.html" %>
+
+<script src="http://axe.mappy.com/1v1/init/get.aspx?auth=kuI8A4aHFhM21C4CPQETwxSeu2LwOq2mCM1PyzuInjYpwRNrgWws5DfG/MGz6tEAH9pzdRr4bGY=
+&version=2.10&solution=ajax"></script>
+
+<div id="mymap" style="width:100%;height:500px;"></div>
+<script>
+  jQuery(document).ready(function ()
+  {
+    var map = new Mappy.api.map.Map({
+      container:'#mymap'
+    });
+    /*Positioning on USA*/
+    map.setCenter(new Mappy.api.geo.Coordinates(-89.0336558,38.892152),2);
+
+    var scalePosition = new Mappy.api.map.tools.ToolPosition('lb', new Mappy.api.types.Point(10, 0));
+    var scale = new Mappy.api.map.tools.Scale(scalePosition);
+    map.addTool(scale);
+
+    var minimapPosition = new Mappy.api.map.tools.ToolPosition('lb');
+    var minimap = new Mappy.api.map.tools.MiniMap(minimapPosition);
+    map.addTool(minimap);
+
+    var toolBarPosition = new Mappy.api.map.tools.ToolPosition('rb', new Mappy.api.types.Point(10, 15));
+    var toolBar = new Mappy.api.map.tools.ToolBar({
+      miniMap : { label : "Open miniMap",
+        position : minimapPosition },
+      move : { label : "Click to move" },
+      zoom : { label : "Zoom in/out" },
+      mouseWheelZoom : { label : "Enable/Disable zoom on mousewheel" },
+      selection : { label: "Rectangle selection" },
+      slider : { label: "Slider" }
+    }, toolBarPosition);
+    map.addTool(toolBar);
+
+    function drawCircle(x, y) {
+      var shapeLayer = new Mappy.api.map.layer.ShapeLayer(40);
+      map.addLayer(shapeLayer);
+      var circle = new Mappy.api.map.shape.Circle(new Mappy.api.geo.Coordinates(x, y),200000);
+
+      //Adding styles
+      shapeLayer.addShape(circle);
+      var outStyle = new Mappy.api.map.shape.ShapeStyle({
+        lineWidth : 3,
+        strokeStyle : "80000000",
+        fillStyle : "FFFF00FF"
+      });
+      var overStyle = new Mappy.api.map.shape.ShapeStyle({
+        lineWidth : 1,
+        strokeStyle : "FFFF00FF",
+        fillStyle : "80000000"
+      });
+
+      // Adding Mouse over action.
+      circle.addListener("mouseover", function ()
+      {
+        circle.setStyle(overStyle);
+      });
+      circle.addListener("mouseout", function ()
+      {
+        circle.setStyle(outStyle);
+      });
+      //alert("drawCircle called. " + x + ", " + y);
+    }
+
+    //drawCircle(-78.00, 39.89);
+
+    /* circle coordinate, size in radius*/
+
+
+    var geocoder = new Mappy.api.geolocation.Geocoder();
+
+    var addr = new Mappy.api.geolocation.AddressLocation('USA', '', '');
+    addr.setSubcountryName('CT');
+    geocoder.geocode(addr, function (results)
+    {
+      //alert('result length: ' + results.length);
+      x = results[0].Placemark.Point.coordinates[0];
+      y = results[0].Placemark.Point.coordinates[1];
+      //alert('Call back func -> X: ' + x + ", Y: " + y);
+      drawCircle(x, y);
+    });
+
+    addr.setSubcountryName('TX');
+    geocoder.geocode(addr, function (results)
+    {
+      //alert('result length: ' + results.length);
+      x = results[0].Placemark.Point.coordinates[0];
+      y = results[0].Placemark.Point.coordinates[1];
+      //alert('Call back func -> X: ' + x + ", Y: " + y);
+      drawCircle(x, y);
+    });
+
+
+  });
+</script>

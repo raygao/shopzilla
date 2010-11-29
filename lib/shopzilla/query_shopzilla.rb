@@ -4,10 +4,10 @@ class QueryShopzilla
   def query_strings(brands = """", favorites = "", interests = "")
     result = OpenHash.new({})
     sql = <<-HERE
-      SELECT id,FirstName, LastName, PersonMailingState, Gender__c,
+      SELECT id,FirstName, LastName, PersonMailingState, Gender__c, PersonMailingPostalCode,
         (SELECT id, Brand__c from Favorite_Brands__r WHERE Brand__c IN('%s')),
         (SELECT id, Store_Name__c from Favorite_Stores__r WHERE Store_Name__c IN('%s')),
-        (SELECT id, Category_Label__c from Category_Interests__r WHERE Name IN('%s'))
+        (SELECT id, Category_Label__c from Category_Interests__r WHERE Category_Label__c IN('%s'))
       FROM Account
       WHERE PersonMailingState != NULL
       AND Gender__c in ('Male', 'male', 'Female', 'female')
@@ -23,10 +23,10 @@ class QueryShopzilla
   def query_arrays(brands_array=[], favorites_array=[], interests_array=[])
     result = OpenHash.new({})
     sql = <<-HERE
-      SELECT id,FirstName, LastName, PersonMailingState, Gender__c,
+      SELECT id,FirstName, LastName, PersonMailingState, Gender__c, PersonMailingPostalCode,
         (SELECT id, Brand__c from Favorite_Brands__r WHERE Brand__c IN(%s)),
         (SELECT id, Store_Name__c from Favorite_Stores__r WHERE Store_Name__c IN(%s)),
-        (SELECT id, Category_Label__c from Category_Interests__r WHERE Name IN(%s))
+        (SELECT id, Category_Label__c from Category_Interests__r WHERE Category_Label__c IN(%s))
       FROM Account
       WHERE PersonMailingState != NULL
       AND Gender__c in ('Male', 'male', 'Female', 'female')

@@ -1,0 +1,118 @@
+<h3>State Map</h3>
+<% states = Hash.new %>
+<!-- calculate states -->
+<% @search_results.each do |single_result| %>
+  <% states[single_result.PersonMailingState] = states[single_result.PersonMailingState].to_i + 1 %>
+<% end %>
+<!-- show states -->
+<% sort_states = states.sort %>
+<% sort_states.each do |state| %>
+  <%= state[0].to_s  + " ===> " + state[1].to_s + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" %>
+<% end %>
+<hr/>
+
+<%= "show.html" %>
+
+<script src="http://axe.mappy.com/1v1/init/get.aspx?auth=kuI8A4aHFhM21C4CPQETwxSeu2LwOq2mCM1PyzuInjYpwRNrgWws5DfG/MGz6tEAH9pzdRr4bGY=
+&version=2.10&solution=ajax"></script>
+
+<div id="mymap" style="width:1000px;height:500px;"></div>
+<script>
+  jQuery(document).ready(function ()
+  {
+    var map = new Mappy.api.map.Map({
+      container:'#mymap'
+    });
+    /*Positioning on USA*/
+    map.setCenter(new Mappy.api.geo.Coordinates(-89.0336558,38.892152),2);
+
+    var scalePosition = new Mappy.api.map.tools.ToolPosition('lb', new Mappy.api.types.Point(10, 0));
+    var scale = new Mappy.api.map.tools.Scale(scalePosition);
+    map.addTool(scale);
+
+    var minimapPosition = new Mappy.api.map.tools.ToolPosition('lb');
+    var minimap = new Mappy.api.map.tools.MiniMap(minimapPosition);
+    map.addTool(minimap);
+
+    var toolBarPosition = new Mappy.api.map.tools.ToolPosition('rb', new Mappy.api.types.Point(10, 15));
+    var toolBar = new Mappy.api.map.tools.ToolBar({
+      miniMap : { label : "Open miniMap",
+        position : minimapPosition },
+      move : { label : "Click to move" },
+      zoom : { label : "Zoom in/out" },
+      mouseWheelZoom : { label : "Enable/Disable zoom on mousewheel" },
+      selection : { label: "Rectangle selection" },
+      slider : { label: "Slider" }
+    }, toolBarPosition);
+    map.addTool(toolBar);
+
+    function drawCircle(x, y, size) {
+      var shapeLayer = new Mappy.api.map.layer.ShapeLayer(40);
+      map.addLayer(shapeLayer);
+      radius = 10;
+      if (size == 'small') {
+        radius = 50000;
+
+      }
+      else if (size == 'medium') {
+        radius = 100000;
+      }
+      else if (size == 'large') {
+        radius = 200000;
+      }
+      else {
+        radius = 10;
+      }
+
+      //random fill color - String of 8 characters describing in hexadecimal the values Opacity, Blue, Green, and Red
+      function get_random_color() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '';
+        for (var i = 0; i < 8; i++ ) {
+          color += letters[Math.round(Math.random() * 15)];
+        }
+        return color;
+      }
+      var color = get_random_color();
+
+      var fill_color = new Mappy.api.map.shape.ShapeStyle({
+        lineWidth : 2,
+        strokeStyle : 'FFCC0066',
+        fillStyle : color
+      });
+
+      //Now draws the circles
+      var circle = new Mappy.api.map.shape.Circle(new Mappy.api.geo.Coordinates(x, y), radius, fill_color);
+
+      shapeLayer.addShape(circle);
+      //alert("drawCircle called. " + x + ", " + y);
+    }
+
+    var geocoder = new Mappy.api.geolocation.Geocoder();
+
+    <% sort_states.each do |state| %>
+          var addr = new Mappy.api.geolocation.AddressLocation('USA', '', '');
+          // state[0].to_s is the state name
+          addr.setSubcountryName('<%= state[0].to_s%>');
+          <%
+            size = 'small'
+            if state[1].to_i >= 1 && state[1].to_i <= 10
+              size = 'small'
+            elsif state[1].to_i > 10 && state[1].to_i <= 30
+              size = 'medium'
+            elsif state[1].to_i > 30
+              size = 'large'
+            end
+          %>
+    geocoder.geocode(addr, function (results)
+      {
+        //alert('result length: ' + results.length);
+        x = results[0].Placemark.Point.coordinates[0];
+        y = results[0].Placemark.Point.coordinates[1];
+        //alert('Call back func -> X: ' + x + ", Y: " + y);
+        /* circle coordinate, size in radius*/
+        drawCircle(x, y, "<%= size %>");
+    });
+    <% end %>
+  });
+</script>
